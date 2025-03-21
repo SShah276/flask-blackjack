@@ -76,7 +76,8 @@
     
     {% if 'You' in message or 'Bust!' in message or 'wins!' in message or 'Draw!' in message or 'Blackjack!' in message %}
     <a href="{{ url_for('new_game') }}">
-                <button type="submit">New Game</button>
+        <br>
+        <button type="submit">Deal Again</button>
     </a>
     {% endif %}
 </body>
