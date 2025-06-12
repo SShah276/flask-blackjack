@@ -3,10 +3,10 @@ A simple web-based implementation of the classic Blackjack card game built with 
 
 ## **Features**
 
-Play the Blackjack card game against a dealer controlled by the computer
-Simple and intuitive UI
-Session-based gameplay that maintains game state between actions
-Dealer plays by standard casino rules (hits until 17)
+* Play the Blackjack card game against a dealer controlled by the computer  
+* Simple and intuitive UI  
+* Session-based gameplay that maintains game state between actions  
+* Dealer plays by standard casino rules (hits until 17)  
 
 ## Installation
 1. Clone this repository
@@ -41,9 +41,9 @@ app.py - Main application file with routes and game logic
 templates/index.html - HTML template for the game interface
 
 
-###Future Improvements!
+### Future Improvements!
 
-Add betting functionality with money
-Implement splitting and doubling down
-Add more advanced game statistics
-Improve the user interface with card images
+Add betting functionality with money  
+Implement splitting and doubling down  
+Add more advanced game statistics  
+Improve the user interface with card images  
