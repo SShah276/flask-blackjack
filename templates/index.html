@@ -26,6 +26,7 @@
             margin: 10px;
         }
 
+
         button:hover {
             background-color: #45a049;
         }
@@ -40,6 +41,16 @@
             margin-top: 20px;
             color: #FFD700;
         }
+
+        .center {
+            margin: 0;
+            position: absolute;
+            top: 90%;
+            left: 50%;
+            -ms-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%);
+        }
+
     </style>
 </head>
 
@@ -81,4 +92,11 @@
     </a>
     {% endif %}
 </body>
+
+<div class="center">
+  <a href="{{ url_for('dashboard') }}">
+    <button class = "vertical-center"> History Dashboard </button>
+  </a>
+</div>
+
 </html>

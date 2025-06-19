@@ -1,8 +1,20 @@
 from flask import Flask, render_template, request, redirect, url_for, session
+from sqlalchemy import func
 from blackjack import deal_card, calculate_hand, determine_result
+from models import db, Game
+import json
 
 app = Flask(__name__)
 app.secret_key = 'key'
+
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://blackjack_user:password123@localhost/blackjack_db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+db.init_app(app)
+
+@app.before_request
+def create_tables():
+    db.create_all()
 
 # Routes
 @app.route('/')
@@ -54,7 +66,16 @@ def stand():
     session.modified = True
     
     result = determine_result(session['player_hand'], dealer_hand)
-    
+
+    # Save game result to DB
+    game = Game(
+        player_hand=json.dumps(session['player_hand']),
+        dealer_hand=json.dumps(dealer_hand),
+        result=result
+    )
+    db.session.add(game)
+    db.session.commit()
+
     return render_template('index.html',
                          player_hand=session['player_hand'],
                          dealer_hand=dealer_hand,
@@ -70,6 +91,28 @@ def new_game():
     session.pop('player_turn', None)
     session.modified = True
     return redirect(url_for('index'))
+
+@app.route('/history')
+def history():
+    games = Game.query.order_by(Game.timestamp.desc()).limit(50).all()
+    return render_template('history.html', games=games)
+
+@app.route('/dashboard')
+def dashboard():
+    total_games = Game.query.count()
+    
+    total_wins = Game.query.filter(Game.result.like("You win%")).count()
+    total_losses = Game.query.filter(Game.result.like("%You lose%")).count()
+    total_draws = Game.query.filter(Game.result.like("Draw%")).count()
+    
+    recent_games = Game.query.order_by(Game.timestamp.desc()).limit(5).all()
+
+    return render_template('dashboard.html', 
+                           total_games=total_games,
+                           total_wins=total_wins,
+                           total_losses=total_losses,
+                           total_draws=total_draws,
+                           recent_games=recent_games)
 
 if __name__ == "__main__":
     app.run(debug=True)
