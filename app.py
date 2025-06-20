@@ -92,11 +92,6 @@ def new_game():
     session.modified = True
     return redirect(url_for('index'))
 
-@app.route('/history')
-def history():
-    games = Game.query.order_by(Game.timestamp.desc()).limit(50).all()
-    return render_template('history.html', games=games)
-
 @app.route('/dashboard')
 def dashboard():
     total_games = Game.query.count()
