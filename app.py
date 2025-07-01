@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, session
-from sqlalchemy import func
+from sqlalchemy import func 
+from sqlalchemy import or_
 from blackjack import deal_card, calculate_hand, determine_result
 from models import db, Game
 import json
@@ -96,18 +97,33 @@ def new_game():
 def dashboard():
     total_games = Game.query.count()
     
-    total_wins = Game.query.filter(Game.result.like("You win%")).count()
-    total_losses = Game.query.filter(Game.result.like("%You lose%")).count()
-    total_draws = Game.query.filter(Game.result.like("Draw%")).count()
+    total_wins = Game.query.filter(Game.result.like("%You win%")).count()
     
-    recent_games = Game.query.order_by(Game.timestamp.desc()).limit(5).all()
+    total_losses = Game.query.filter(Game.result.like("%You lose%")).count()
+
+    total_draws = Game.query.filter(Game.result.ilike("%Draw%")).count()
+    
+    recent_games = Game.query.order_by(Game.timestamp.desc()).limit(10).all()
+
+    if total_games > 0:
+        win_percentage = round((total_wins / total_games) * 100, 2)
+    else:
+        win_percentage = 0.0
+
 
     return render_template('dashboard.html', 
                            total_games=total_games,
                            total_wins=total_wins,
                            total_losses=total_losses,
                            total_draws=total_draws,
-                           recent_games=recent_games)
+                           recent_games=recent_games,
+                           win_percentage=win_percentage)
+
+@app.route('/reset', methods=['POST'])  # or use GET if it's just a URL trigger
+def reset_game_stats():
+    Game.query.delete()
+    db.session.commit()
+    return redirect(url_for('dashboard')) 
 
 if __name__ == "__main__":
     app.run(debug=True)

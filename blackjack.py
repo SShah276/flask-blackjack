@@ -41,12 +41,12 @@ def determine_result(player_hand, dealer_hand):
     elif player_total == 21:
         return f"Blackjack! You win with {player_hand}!"
     elif dealer_total == 21:
-        return f"Dealer wins with Blackjack! Dealer had {dealer_hand}."
+        return f"Dealer wins with Blackjack! Dealer had {dealer_hand}. You lose!"
     elif player_total > 21:
         return f"Bust! You had {player_hand} for a total of {player_total}. You lose!"
     elif dealer_total > 21:
         return f"Dealer busts! Dealer had {dealer_hand} for a total of {dealer_total}. You win!"
     elif 21 - dealer_total < 21 - player_total:
-        return f"Dealer wins! Dealer had {dealer_hand} ({dealer_total}), you had {player_hand} ({player_total})."
+        return f"Dealer wins! Dealer had {dealer_hand} ({dealer_total}), you had {player_hand} ({player_total}). You lose!"
     else:
         return f"You win! You had {player_hand} ({player_total}), dealer had {dealer_hand} ({dealer_total})."

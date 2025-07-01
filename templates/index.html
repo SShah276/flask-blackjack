@@ -3,53 +3,80 @@
 
 <head>
     <title>Blackjack Game</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
-            font-family: 'Arial', sans-serif;
-            background-color: #222;
-            color: #fff;
-            text-align: center;
-            padding: 20px;
+        background: linear-gradient(145deg, #165d28, #0b3e18);
+        font-family: 'Segoe UI', sans-serif;
+        color: white;
+        padding: 40px;
+        text-align: center;
         }
 
-        h1 {
-            color: #FFD700;
-        }
+    .card {
+        width: 80px;
+        height: 120px;
+        background-color: white;
+        color: black;
+        border: 1px solid #000;
+        border-radius: 8px;
+        font-size: 24px;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 2px 2px 10px rgba(0,0,0,0.5);
+        transition: transform 0.5s ease;
+    }
 
-        button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            margin: 10px;
-        }
+    .card.flip {
+        transform: rotateY(180deg);
+    }
 
+    .card-container {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
 
-        button:hover {
-            background-color: #45a049;
-        }
+    .result {
+        font-size: 28px;
+        color: #FFD700;
+        margin: 20px 0;
+    }
 
-        .cards {
-            font-size: 24px;
-            margin-bottom: 20px;
-        }
+    button {
+        background-color: #28a745;
+        color: white;
+        padding: 12px 25px;
+        border: none;
+        border-radius: 6px;
+        font-size: 18px;
+        margin: 10px;
+        cursor: pointer;
+    }
 
-        .result {
-            font-size: 28px;
-            margin-top: 20px;
-            color: #FFD700;
-        }
+    button:hover {
+        background-color: #218838;
+    }
 
-        .center {
-            margin: 0;
-            position: absolute;
-            top: 90%;
-            left: 50%;
-            -ms-transform: translate(-50%, -50%);
-            transform: translate(-50%, -50%);
-        }
+    .button-group {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin-top: 20px;
+        flex-wrap: wrap;
+    }
+
+    @keyframes flipIn {
+    from { transform: rotateY(90deg); opacity: 0; }
+    to   { transform: rotateY(0deg); opacity: 1; }
+    }
+
+    .card {
+    animation: flipIn 0.5s ease;
+    }
 
     </style>
 </head>
@@ -58,45 +85,58 @@
     <h1>Blackjack</h1>
 
     <h2>Dealer's Hand</h2>
-    <div class="cards">
+    <div class="card-container">
         {% if "Hit or Stand?" in message %}
-        {{ dealer_hand[0] }}, ?
+            <div class="card">{{ dealer_hand[0] }}</div>
+            <div class="card">?</div>
         {% else %}
-        {{ dealer_hand }} (Total: {{ dealer_total }})
+            {% for card in dealer_hand %}
+                <div class="card">{{ card }}</div>
+            {% endfor %}
         {% endif %}
     </div>
+    {% if "Hit or Stand?" not in message %}
+    <p>Total: {{ dealer_total }}</p>
+    {% endif %}
+
 
     <h2>Your Hand</h2>
-    <div class="cards">
-        {{ player_hand }} (Total: {{ player_total }})
+    <div class="card-container">
+        {% for card in player_hand %}
+            <div class="card">{{ card }}</div>
+        {% endfor %}
     </div>
+    <p>Total: {{ player_total }}</p>
 
     {% if message %}
     <div class="result">{{ message }}</div>
     {% endif %}
 
     {% if "Hit or Stand?" in message %}
+<div class="button-group">
     <form action="/hit" method="get">
         <button type="submit">Hit</button>
     </form>
     <form action="/stand" method="get">
         <button type="submit">Stand</button>
     </form>
-    {% else %}
+</div>
     {% endif %}
     
-    {% if 'You' in message or 'Bust!' in message or 'wins!' in message or 'Draw!' in message or 'Blackjack!' in message %}
+   {% if 'You' in message or 'Bust!' in message or 'wins!' in message or 'Draw!' in message or 'Blackjack!' in message %}
+<div class="button-group">
     <a href="{{ url_for('new_game') }}">
-        <br>
-        <button type="submit">Deal Again</button>
+        <button>Deal Again</button>
     </a>
     {% endif %}
+
+    <a href="{{ url_for('dashboard') }}">
+        <button>History Dashboard</button>
+    </a>
+</div>
 </body>
 
-<div class="center">
-  <a href="{{ url_for('dashboard') }}">
-    <button class = "vertical-center"> History Dashboard </button>
-  </a>
-</div>
-
+<form action="{{ url_for('reset_game_stats') }}" method="post" style="position: absolute; top: 20px; right: 20px;">
+    <button type="submit">Reset Stats</button>
+</form>
 </html>

@@ -44,15 +44,19 @@
           </div>
         </div>
       </div>
+      <br>
+      <div class="stat-item" style="margin-top: 30px;">
+    <h3>Win Percentage</h3>
+    <p>{{ win_percentage }}%</p>
+      </div>
     </div>
       <div class="text-center mt-4">
       <a href="{{ url_for('index') }}" class="btn btn-primary">Back to Game</a>
     </div>
-    <h4 class="mb-3">🕒 Recent Games</h4>
+    <h4 class="mb-3"> Recent Games</h4>
     <ul class="list-group shadow">
       {% for game in recent_games %}
         <li class="list-group-item">
-          <strong>{{ game.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</strong><br>
           Player: {{ game.player_hand }}<br>
           Dealer: {{ game.dealer_hand }}<br>
           Result: <strong>{{ game.result }}</strong>
