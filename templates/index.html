@@ -129,14 +129,6 @@
         <button>Deal Again</button>
     </a>
     {% endif %}
-
-    <a href="{{ url_for('dashboard') }}">
-        <button>History Dashboard</button>
-    </a>
 </div>
 </body>
-
-<form action="{{ url_for('reset_game_stats') }}" method="post" style="position: absolute; top: 20px; right: 20px;">
-    <button type="submit">Reset Stats</button>
-</form>
 </html>

@@ -1,21 +1,9 @@
 from flask import Flask, render_template, request, redirect, url_for, session
-from sqlalchemy import func 
-from sqlalchemy import or_
 from blackjack import deal_card, calculate_hand, determine_result
-from models import db, Game
 import json
 
 app = Flask(__name__)
 app.secret_key = 'key'
-
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://blackjack_user:password123@localhost/blackjack_db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
-db.init_app(app)
-
-@app.before_request
-def create_tables():
-    db.create_all()
 
 # Routes
 @app.route('/')
@@ -26,11 +14,13 @@ def index():
         session['dealer_hand'] = [deal_card(), deal_card()]
         session['player_turn'] = True
     
-    return render_template('index.html',
-                         player_hand=session['player_hand'],
-                         dealer_hand=session['dealer_hand'],
-                         player_total=calculate_hand(session['player_hand']),
-                         message="Hit or Stand?")
+    return render_template(
+        'index.html',
+        player_hand=session['player_hand'],
+        dealer_hand=session['dealer_hand'],
+        player_total=calculate_hand(session['player_hand']),
+        message="Hit or Stand?"
+    )
 
 @app.route('/hit')
 def hit():
@@ -47,7 +37,6 @@ def hit():
             session['player_turn'] = False
             return redirect(url_for('stand'))
     
-    # Make sure to store the modified session data
     session.modified = True
     return redirect(url_for('index'))
 
@@ -68,21 +57,14 @@ def stand():
     
     result = determine_result(session['player_hand'], dealer_hand)
 
-    # Save game result to DB
-    game = Game(
-        player_hand=json.dumps(session['player_hand']),
-        dealer_hand=json.dumps(dealer_hand),
-        result=result
+    return render_template(
+        'index.html',
+        player_hand=session['player_hand'],
+        dealer_hand=dealer_hand,
+        player_total=calculate_hand(session['player_hand']),
+        dealer_total=calculate_hand(dealer_hand),
+        message=result
     )
-    db.session.add(game)
-    db.session.commit()
-
-    return render_template('index.html',
-                         player_hand=session['player_hand'],
-                         dealer_hand=dealer_hand,
-                         player_total=calculate_hand(session['player_hand']),
-                         dealer_total=calculate_hand(dealer_hand),
-                         message=result)
 
 @app.route('/new_game')
 def new_game():
@@ -93,37 +75,7 @@ def new_game():
     session.modified = True
     return redirect(url_for('index'))
 
-@app.route('/dashboard')
-def dashboard():
-    total_games = Game.query.count()
-    
-    total_wins = Game.query.filter(Game.result.like("%You win%")).count()
-    
-    total_losses = Game.query.filter(Game.result.like("%You lose%")).count()
-
-    total_draws = Game.query.filter(Game.result.ilike("%Draw%")).count()
-    
-    recent_games = Game.query.order_by(Game.timestamp.desc()).limit(10).all()
-
-    if total_games > 0:
-        win_percentage = round((total_wins / total_games) * 100, 2)
-    else:
-        win_percentage = 0.0
-
-
-    return render_template('dashboard.html', 
-                           total_games=total_games,
-                           total_wins=total_wins,
-                           total_losses=total_losses,
-                           total_draws=total_draws,
-                           recent_games=recent_games,
-                           win_percentage=win_percentage)
-
-@app.route('/reset', methods=['POST'])  # or use GET if it's just a URL trigger
-def reset_game_stats():
-    Game.query.delete()
-    db.session.commit()
-    return redirect(url_for('dashboard')) 
+# Removed /reset because dashboard no longer exists
 
 if __name__ == "__main__":
     app.run(debug=True)
