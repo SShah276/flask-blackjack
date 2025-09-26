@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard - Flask Blackjack</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #1c1c1c;
+            color: #f5f5f5;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background: #333;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header .links a {
+            margin-left: 15px;
+            color: #f5f5f5;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        header .links a:hover {
+            text-decoration: underline;
+        }
+
+        h1 {
+            margin-top: 20px;
+            color: #ffcc00;
+        }
+
+        table {
+            margin: 30px auto;
+            border-collapse: collapse;
+            width: 60%;
+        }
+
+        th,
+        td {
+            border: 1px solid #555;
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background: #444;
+        }
+
+        tr:nth-child(even) {
+            background: #2a2a2a;
+        }
+
+        .back-button {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        .back-button:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div>
+            👤 Logged in as: <strong>{{ session['username'] }}</strong>
+        </div>
+        <div class="links">
+            <a href="{{ url_for('index') }}">🎮 Back to Game</a>
+            <a href="{{ url_for('logout') }}">🚪 Logout</a>
+        </div>
+    </header>
+
+    <h1>📊 Your Blackjack Stats</h1>
+
+    <table>
+        <tr>
+            <th>Total Games</th>
+            <th>Wins</th>
+            <th>Losses</th>
+        </tr>
+        <tr>
+            <td>{{ stats.total_games }}</td>
+            <td>{{ stats.wins }}</td>
+            <td>{{ stats.losses }}</td>
+        </tr>
+    </table>
+
+    <a href="{{ url_for('index') }}" class="back-button">⬅ Back to Game</a>
+
+</body>
+
+</html>

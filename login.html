@@ -1,0 +1,22 @@
+<!-- templates/login.html -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Blackjack Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Welcome to Blackjack!</h1>
+        <form action="{{ url_for('login') }}" method="post">
+            <label for="username">Enter your name:</label>
+            <input type="text" id="username" name="username" required>
+            <button type="submit">Play</button>
+        </form>
+    </div>
+</body>
+
+</html>

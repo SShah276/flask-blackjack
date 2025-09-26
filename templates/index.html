@@ -1,135 +1,99 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
-    <title>Blackjack Game</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <title>Flask Blackjack</title>
     <style>
         body {
-        background: #0b3e18;
-        font-family: 'Segoe UI', sans-serif;
-        color: white;
-        padding: 40px;
-        text-align: center;
+            font-family: Arial, sans-serif;
+            background: #1c1c1c;
+            color: #f5f5f5;
+            text-align: center;
+            margin: 0;
+            padding: 0;
         }
 
-    .card {
-        width: 80px;
-        height: 120px;
-        background-color: white;
-        color: black;
-        border: 1px solid #000;
-        border-radius: 8px;
-        font-size: 24px;
-        font-weight: bold;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-shadow: 2px 2px 10px rgba(0,0,0,0.5);
-        transition: transform 0.5s ease;
-    }
+        header {
+            background: #333;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-    .card.flip {
-        transform: rotateY(180deg);
-    }
+        header .links a {
+            margin-left: 15px;
+            color: #f5f5f5;
+            text-decoration: none;
+            font-weight: bold;
+        }
 
-    .card-container {
-        display: flex;
-        justify-content: center;
-        gap: 10px;
-        margin-bottom: 20px;
-    }
+        header .links a:hover {
+            text-decoration: underline;
+        }
 
-    .result {
-        font-size: 28px;
-        color: #FFD700;
-        margin: 20px 0;
-    }
+        h1 {
+            margin-top: 20px;
+            color: #ffcc00;
+        }
 
-    button {
-        background-color: #28a745;
-        color: white;
-        padding: 12px 25px;
-        border: none;
-        border-radius: 6px;
-        font-size: 18px;
-        margin: 10px;
-        cursor: pointer;
-    }
+        .container {
+            margin-top: 40px;
+        }
 
-    button:hover {
-        background-color: #218838;
-    }
+        button {
+            padding: 10px 20px;
+            margin: 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
 
-    .button-group {
-        display: flex;
-        justify-content: center;
-        gap: 15px;
-        margin-top: 20px;
-        flex-wrap: wrap;
-    }
+        .hit {
+            background: #28a745;
+            color: white;
+        }
 
-    @keyframes flipIn {
-    from { transform: rotateY(90deg); opacity: 0; }
-    to   { transform: rotateY(0deg); opacity: 1; }
-    }
-
-    .card {
-    animation: flipIn 0.5s ease;
-    }
-
+        .stand {
+            background: #dc3545;
+            color: white;
+        }
     </style>
 </head>
 
 <body>
-    <h1 style="font-size: 70px;">Blackjack</h1>
-    <br>
-    <br>
-    <h2>Dealer's Hand</h2>
-    <div class="card-container">
-        {% if "Hit or Stand?" in message %}
-            <div class="card">{{ dealer_hand[0] }}</div>
-            <div class="card">?</div>
+
+    <header>
+        <div>
+            👤 Logged in as: <strong>{{ session['username'] }}</strong>
+        </div>
+        <div class="links">
+            <a href="{{ url_for('dashboard') }}">📊 Dashboard</a>
+            <a href="{{ url_for('logout') }}">🚪 Logout</a>
+        </div>
+    </header>
+
+    <h1>♠️ Flask Blackjack ♥️</h1>
+
+    <div class="container">
+        {% if session.get('player_hand') %}
+        <p><strong>Your hand:</strong> {{ session['player_hand'] }}</p>
+        <p><strong>Dealer’s hand:</strong> {{ session['dealer_hand'] }}</p>
         {% else %}
-            {% for card in dealer_hand %}
-                <div class="card">{{ card }}</div>
-            {% endfor %}
+        <p>Click "Hit" to start a new game!</p>
         {% endif %}
+
+        <form action="{{ url_for('hit') }}" method="post">
+            <button class="hit">Hit</button>
+        </form>
+
+        <form action="{{ url_for('stand') }}" method="post">
+            <button class="stand">Stand</button>
+        </form>
     </div>
-    {% if "Hit or Stand?" not in message %}
-    <p>Total: {{ dealer_total }}</p>
-    {% endif %}
 
-
-    <h2>Your Hand</h2>
-    <div class="card-container">
-        {% for card in player_hand %}
-            <div class="card">{{ card }}</div>
-        {% endfor %}
-    </div>
-    <p>Total: {{ player_total }}</p>
-
-    {% if message %}
-    <div class="result">{{ message }}</div>
-    {% endif %}
-
-    {% if "Hit or Stand?" in message %}
-<div class="button-group">
-    <form action="/hit" method="get">
-        <button type="submit">Hit</button>
-    </form>
-    <form action="/stand" method="get">
-        <button type="submit">Stand</button>
-    </form>
-</div>
-    {% endif %}
-    
-   {% if 'You' in message or 'Bust!' in message or 'wins!' in message or 'Draw!' in message or 'Blackjack!' in message %}
-<div class="button-group">
-    <a href="{{ url_for('new_game') }}">
-        <button>Deal Again</button>
-    </a>
-    {% endif %}
-</div>
 </body>
+
 </html>
