@@ -1,4 +1,5 @@
 import random
+
 # Blackjack functions and logic
 def deal_card():
     """Deals a random card from the deck."""
@@ -17,36 +18,47 @@ def calculate_hand(hand):
     total = 0
     face = ['J','Q','K']
     aceCount = 0
+    
+    # First, add up all non-ace cards
     for card in hand:
         if card in range(1,11):
             total += card
         elif card in face:
-            total+= 10
+            total += 10
         elif card == 'A':
-            aceCount = 1
+            aceCount += 1  # FIXED: was aceCount = 1
+    
+    # Now handle aces
     for _ in range(aceCount):
         if total + 11 <= 21:
             total += 11
         else:
             total += 1
+    
     return total
 
 def determine_result(player_hand, dealer_hand):
     """Determines the outcome of the game."""
     player_total = calculate_hand(player_hand)
     dealer_total = calculate_hand(dealer_hand)
+    
+    # Check for true blackjack (21 with exactly 2 cards)
+    player_blackjack = (len(player_hand) == 2 and player_total == 21)
+    dealer_blackjack = (len(dealer_hand) == 2 and dealer_total == 21)
 
-    if player_total == 21 and dealer_total == 21:
-        return f"Draw! Both have 21."
-    elif player_total == 21:
+    if player_blackjack and dealer_blackjack:
+        return f"Draw! Both have blackjack."
+    elif player_blackjack:
         return f"Blackjack! You win with {player_hand}!"
-    elif dealer_total == 21:
+    elif dealer_blackjack:
         return f"Dealer wins with Blackjack! Dealer had {dealer_hand}. You lose!"
     elif player_total > 21:
         return f"Bust! You had {player_hand} for a total of {player_total}. You lose!"
     elif dealer_total > 21:
         return f"Dealer busts! Dealer had {dealer_hand} for a total of {dealer_total}. You win!"
-    elif 21 - dealer_total < 21 - player_total:
-        return f"Dealer wins! Dealer had {dealer_hand} ({dealer_total}), you had {player_hand} ({player_total}). You lose!"
-    else:
+    elif player_total > dealer_total:  # FIXED: Simplified the logic
         return f"You win! You had {player_hand} ({player_total}), dealer had {dealer_hand} ({dealer_total})."
+    elif dealer_total > player_total:
+        return f"Dealer wins! Dealer had {dealer_hand} ({dealer_total}), you had {player_hand} ({player_total}). You lose!"
+    else:  # player_total == dealer_total
+        return f"Draw! Both have {player_total}. You had {player_hand}, dealer had {dealer_hand}."
