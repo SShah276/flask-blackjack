@@ -24,9 +24,17 @@ class Game(db.Model):
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
 # Routes
+
 @app.before_request
 def create_tables():
     db.create_all()
+
+@app.route('/')
+def home():
+    """Root route - redirect to login if not logged in, otherwise to game"""
+    if 'username' in session:
+        return redirect(url_for('index'))
+    return redirect(url_for('login'))
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
