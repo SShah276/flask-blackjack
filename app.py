@@ -1,9 +1,15 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 from blackjack import deal_card, calculate_hand, determine_result
+from models import db, Game
 import json
+from flask_sqlalchemy import SQLAlchemy
+import os
 
 app = Flask(__name__)
 app.secret_key = 'key'
+
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DATABASE_URL")
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Routes
 @app.route('/')
@@ -76,6 +82,10 @@ def new_game():
     return redirect(url_for('index'))
 
 # Removed /reset because dashboard no longer exists
-
+with app.app_context():
+    db.create_all()
+    
 if __name__ == "__main__":
     app.run(debug=True)
+
+
