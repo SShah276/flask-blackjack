@@ -1,6 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 from blackjack import deal_card, calculate_hand, determine_result
-from models import db, Game
 import json
 from flask_sqlalchemy import SQLAlchemy
 import os
