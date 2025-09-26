@@ -4,12 +4,25 @@ from models import db, Game
 import json
 from flask_sqlalchemy import SQLAlchemy
 import os
+from sqlalchemy.sql import func
+from datetime import datetime
+
 
 app = Flask(__name__)
 app.secret_key = 'key'
 
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DATABASE_URL")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+db = SQLAlchemy(app)
+
+class Game(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(50), nullable=False)
+    player_hand = db.Column(db.Text, nullable=False)
+    dealer_hand = db.Column(db.Text, nullable=False)
+    result = db.Column(db.String(20), nullable=False)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
 # Routes
 @app.before_request
