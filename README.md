@@ -1,13 +1,14 @@
 # Flask Blackjack
 A simple web-based implementation of the classic Blackjack with game logic built with Python and player game history is stored in a MySQL database using SQLAlchemy.
 
+https://web-blackjack.up.railway.app/login
+
 ## **Features**
 
 - Classic Blackjack gameplay logic (Hit, Stand, Bust, Blackjack)<br>
 - Dealer plays by standard casino rules (hits below 17)<br>
-- Game results saved to a MySQL database with timestamps<br>
-- Dashboard with game statistics (wins, losses, draws, win %)<br>
-- Ability to reset game statistics<br>
+- Game results saved to a MySQL database 
+- Dashboard with game statistics (wins, losses, win %)<br>
 - Built using Flask, SQLAlchemy, and Jinja2 templates
 
 
