@@ -20,7 +20,7 @@ class Game(db.Model):
     username = db.Column(db.String(50), nullable=False)
     player_hand = db.Column(db.Text, nullable=False)
     dealer_hand = db.Column(db.Text, nullable=False)
-    result = db.Column(db.String(200), nullable=False)  # Increased size for longer messages
+    result = db.Column(db.Text, nullable=False)  
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
 # Make calculate_hand available in templates
@@ -252,6 +252,12 @@ def debug_results():
     games = Game.query.filter_by(username=session['username']).all()
     results = [(game.result, game.timestamp) for game in games]
     return f"<pre>Game results:\n{json.dumps(results, indent=2, default=str)}</pre>"
+
+@app.route('/reset_db')
+def reset_db():
+    db.drop_all()
+    db.create_all()
+    return "Database has been reset!"
 
 # Create tables
 with app.app_context():
